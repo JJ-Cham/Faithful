@@ -1,5 +1,3 @@
-# tests/test_database.py
-
 import pytest
 
 from app import create_app
@@ -8,18 +6,16 @@ from models import User, db
 
 @pytest.fixture
 def app():
-    """Create a Flask app configured with a temporary test database."""
-
-    test_app = create_app()
-
-    test_app.config.update(
-        TESTING=True,
-        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    test_app = create_app(
+        {
+            "TESTING": True,
+            "SECRET_KEY": "test-secret-key",
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+        }
     )
 
     with test_app.app_context():
-        db.drop_all()
         db.create_all()
 
         yield test_app
@@ -28,15 +24,19 @@ def app():
         db.drop_all()
 
 
-def test_user_can_be_saved_to_database(app):
-    """Verify that a user can be added and retrieved."""
+@pytest.fixture
+def client(app):
+    return app.test_client()
 
+
+def test_user_can_be_saved_to_database(app):
     with app.app_context():
         user = User(
             name="Test User",
             email="test@example.com",
             selected_religion="Islam",
             city="New York",
+            state="New York",
             country="United States",
         )
 
@@ -54,6 +54,46 @@ def test_user_can_be_saved_to_database(app):
         assert saved_user.email == "test@example.com"
         assert saved_user.selected_religion == "Islam"
         assert saved_user.city == "New York"
+        assert saved_user.state == "New York"
         assert saved_user.country == "United States"
-        assert saved_user.check_password("password123") is True
+
         assert saved_user.password_hash != "password123"
+        assert saved_user.check_password("password123") is True
+        assert saved_user.check_password("wrong-password") is False
+
+
+def test_duplicate_email_is_rejected(client, app):
+    first_response = client.post(
+        "/register",
+        data={
+            "name": "First User",
+            "email": "duplicate@example.com",
+            "password": "password123",
+            "confirm_password": "password123",
+            "selected_religion": "Islam",
+        },
+        follow_redirects=False,
+    )
+
+    second_response = client.post(
+        "/register",
+        data={
+            "name": "Second User",
+            "email": "duplicate@example.com",
+            "password": "password456",
+            "confirm_password": "password456",
+            "selected_religion": "Islam",
+        },
+        follow_redirects=False,
+    )
+
+    assert first_response.status_code == 302
+    assert second_response.status_code == 409
+
+    with app.app_context():
+        users = User.query.filter_by(
+            email="duplicate@example.com"
+        ).all()
+
+        assert len(users) == 1
+        assert users[0].name == "First User"
