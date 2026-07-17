@@ -1,7 +1,5 @@
 # Faithful
 
-# Faithful
-
 ## 🕊️ Description
 **Faithful** is an inclusive faith-based community and learning application designed to help people feel more connected to their religion, discover nearby places of worship, and take small steps toward religious learning.
 
