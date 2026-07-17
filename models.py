@@ -1,5 +1,4 @@
-#models.py
-import os 
+import os
 from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
-
+#stores user account info, selected religion, saved location, and quiz attempts 
 class User(db.Model):
     __tablename__ = "users"
 
@@ -31,13 +30,22 @@ class User(db.Model):
         nullable=False,
     )
 
-    points = db.Column(
-        db.Integer,
-        nullable=False,
-        default=0,
+    selected_religion = db.Column(
+        db.String(100),
+        nullable=True,
     )
 
-    streak = db.Column(
+    city = db.Column(
+        db.String(100),
+        nullable=True,
+    )
+
+    country = db.Column(
+        db.String(100),
+        nullable=True,
+    )
+
+    total_points = db.Column(
         db.Integer,
         nullable=False,
         default=0,
@@ -60,92 +68,6 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    def __repr__(self):
-        return f"<User {self.email}>"
-
-
-class Reminder(db.Model):
-    __tablename__ = "reminders"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    title = db.Column(
-        db.String(150),
-        nullable=False,
-    )
-
-    content = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    category = db.Column(
-        db.String(100),
-        nullable=False,
-    )
-
-    source = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    def __repr__(self):
-        return f"<Reminder {self.title}>"
-
-
-class QuizQuestion(db.Model):
-    __tablename__ = "quiz_questions"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    question = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    option_a = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    option_b = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    option_c = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    option_d = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    correct_answer = db.Column(
-        db.String(1),
-        nullable=False,
-    )
-
-    explanation = db.Column(
-        db.Text,
-        nullable=True,
-    )
-
-    source = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    category = db.Column(
-        db.String(100),
-        nullable=False,
-    )
-
-    def __repr__(self):
-        return f"<QuizQuestion {self.id}>"
 
 
 class QuizAttempt(db.Model):
@@ -179,6 +101,3 @@ class QuizAttempt(db.Model):
         "User",
         back_populates="quiz_attempts",
     )
-
-    def __repr__(self):
-        return f"<QuizAttempt user={self.user_id} score={self.score}>"
