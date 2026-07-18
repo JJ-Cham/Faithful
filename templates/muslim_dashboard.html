@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muslim Dashboard</title>
+</head>
+<body>
+    <h1>Muslim Dashboard</h1>
+
+    <h2>Prayer Times</h2>
+
+    <p>Status: {{ prayer_data.status }}</p>
+    <p>Hijri Date: {{ prayer_data.hijri_date }}</p>
+
+    <ul>
+        {% for prayer, time in prayer_data.prayer_times.items() %}
+            <li>{{ prayer }}: {{ time }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Daily Reminder</h2>
+
+    <blockquote>
+        {{ reminder.content }}
+    </blockquote>
+
+    <p>{{ reminder.surah_verse }}</p>
+    <p>Source: {{ reminder.source }}</p>
+    <small>{{ reminder.disclaimer }}</small>
+
+    <p>
+        <a href="{{ url_for('community') }}">Community Finder</a>
+    </p>
+</body>
+</html>

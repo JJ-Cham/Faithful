@@ -13,7 +13,9 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 
 from models import User, db
+from Api import IslamicAPIService
 
+islamic_api = IslamicAPIService()
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -260,6 +262,24 @@ def create_app(test_config=None):
 
     return app
 
+    @app.route("/api/prayer-times")
+    def prayer_times():
+        latitude = request.args.get("latitude", default=40.7128, type=float)
+        longitude = request.args.get("longitude", default=-74.0060, type=float)
+
+        result = IslamicAPIService.get_prayer_times_and_date(
+            latitude,
+            longitude,
+        )
+
+        return result
+
+
+    @app.route("/api/daily-reminder")
+    def daily_reminder():
+        reminder = IslamicAPIService.get_verified_daily_reminder()
+
+        return reminder
 
 def is_valid_email(email):
     """Perform basic email-format validation."""
