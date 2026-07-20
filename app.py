@@ -213,6 +213,15 @@ def create_app(test_config=None):
 
         return redirect(url_for("community"))
 
+    @app.route("/location")
+    def location():
+        return render_template(
+            "location.html",
+            city=session.get("city"),
+            state=session.get("state"),
+            country=session.get("country"),
+        )
+    
     @app.route("/save-location", methods=["POST"])
     def save_location():
         city = request.form.get("city", "").strip()
@@ -259,11 +268,11 @@ def create_app(test_config=None):
         reminder = IslamicAPIService.get_verified_daily_reminder()
 
         return render_template(
-            "dashboard.html",
+            "muslim_dashboard.html",
             prayer_data=prayer_data,
             reminder=reminder,
         )
-        @app.route("/quiz", methods=["GET", "POST"])
+    @app.route("/quiz", methods=["GET", "POST"])
     def quiz():
         questions = IslamicAPIService.get_verified_quiz_questions()
         score = None
@@ -306,7 +315,7 @@ def create_app(test_config=None):
 
     @app.route("/future-support")
     def future_support():
-        return render_template("future_support.html")
+        return render_template("future_support.html", user=get_logged_in_user())
 
     @app.route("/profile")
     def profile():
