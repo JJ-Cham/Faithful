@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Faithful{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p>Connect. Learn. Grow.</p>
+
+    <h1>Take the next step in your faith journey.</h1>
+
+    <p>
+        Faithful helps users discover nearby places of worship,
+        connect with local communities, and access simple learning
+        tools in one welcoming space.
+    </p>
+
+    <a href="#religion-selection">Get Started</a>
+</section>
+
+<section id="religion-selection" class="religion-selection">
+    <h2>Select Your Religion</h2>
+
+    <p>
+        Choose the religion you practice or would like to learn more about.
+    </p>
+
+    <form action="{{ url_for('select_religion') }}" method="post">
+        <div>
+            <label for="religion">Religion</label>
+
+            <select id="religion" name="religion" required>
+                <option value="">Select one</option>
+                <option value="islam">Islam</option>
+                <option value="christianity">Christianity</option>
+                <option value="judaism">Judaism</option>
+                <option value="hinduism">Hinduism</option>
+                <option value="buddhism">Buddhism</option>
+                <option value="sikhism">Sikhism</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="other_religion">
+                Other religion
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="text"
+                id="other_religion"
+                name="other_religion"
+                placeholder="Enter a religion not listed"
+            >
+        </div>
+
+        <button type="submit">Continue</button>
+    </form>
+</section>
+{% endblock %}

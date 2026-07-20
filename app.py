@@ -17,7 +17,7 @@ from models import User, db
 
 
 def create_app(test_config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="services")
 
     app.config.update(
         SECRET_KEY=os.environ.get(
@@ -263,6 +263,50 @@ def create_app(test_config=None):
             prayer_data=prayer_data,
             reminder=reminder,
         )
+        @app.route("/quiz", methods=["GET", "POST"])
+    def quiz():
+        questions = IslamicAPIService.get_verified_quiz_questions()
+        score = None
+        results = []
+
+        if request.method == "POST":
+            score = 0
+
+            for question in questions:
+                user_answer = request.form.get(
+                    f"answer_{question['id']}",
+                    "",
+                )
+                is_correct = user_answer == question["correct_answer"]
+
+                if is_correct:
+                    score += 1
+
+                results.append(
+                    {
+                        "question": question["question"],
+                        "user_answer": user_answer,
+                        "correct_answer": question["correct_answer"],
+                        "is_correct": is_correct,
+                        "explanation": question["explanation"],
+                        "source": question["source"],
+                    }
+                )
+
+            session["last_quiz_score"] = score
+            session["last_quiz_total"] = len(questions)
+
+        return render_template(
+            "quiz.html",
+            questions=questions,
+            score=score,
+            total_questions=len(questions),
+            results=results,
+        )
+
+    @app.route("/future-support")
+    def future_support():
+        return render_template("future_support.html")
 
     @app.route("/profile")
     def profile():
@@ -298,7 +342,6 @@ def create_app(test_config=None):
 
     return app
 
-
 def is_valid_email(email):
     """Perform basic email-format validation."""
     email_pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
@@ -332,8 +375,9 @@ def validate_registration(
     return None
 
 
+
 app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
