@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Register | Faithful{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <h1>Create Your Account</h1>
+
+    <p>
+        Join Faithful to save your preferences and access personalized tools.
+    </p>
+
+    <form action="{{ url_for('register') }}" method="post">
+        <div>
+            <label for="name">Name</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ name|default('') }}"
+                autocomplete="name"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="email">Email address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ email|default('') }}"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="selected_religion">Religion</label>
+            <select id="selected_religion" name="selected_religion">
+                <option value="">Select one</option>
+
+                <option value="islam"
+                    {% if selected_religion == "islam" %}selected{% endif %}>
+                    Islam
+                </option>
+
+                <option value="christianity"
+                    {% if selected_religion == "christianity" %}selected{% endif %}>
+                    Christianity
+                </option>
+
+                <option value="judaism"
+                    {% if selected_religion == "judaism" %}selected{% endif %}>
+                    Judaism
+                </option>
+
+                <option value="hinduism"
+                    {% if selected_religion == "hinduism" %}selected{% endif %}>
+                    Hinduism
+                </option>
+
+                <option value="buddhism"
+                    {% if selected_religion == "buddhism" %}selected{% endif %}>
+                    Buddhism
+                </option>
+
+                <option value="sikhism"
+                    {% if selected_religion == "sikhism" %}selected{% endif %}>
+                    Sikhism
+                </option>
+
+                <option value="other"
+                    {% if selected_religion == "other" %}selected{% endif %}>
+                    Other
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                minlength="8"
+                autocomplete="new-password"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="confirm_password">Confirm password</label>
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                minlength="8"
+                autocomplete="new-password"
+                required
+            >
+        </div>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+</section>
+{% endblock %}
