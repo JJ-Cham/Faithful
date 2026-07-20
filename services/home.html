@@ -1,142 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends "base.html" %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+{% block title %}Home | Faithful{% endblock %}
 
-    <title>Faithful</title>
+{% block content %}
+<section class="hero">
+    <p>Connect. Learn. Grow.</p>
 
-    <link
-        rel="stylesheet"
-        href="/static/css/style.css"
-    >
-</head>
+    <h1>Take the next step in your faith journey.</h1>
 
-<body>
-    <header>
-    <div class="container header-content">
-        <a href="/" class="brand">Faithful</a>
+    <p>
+        Faithful helps users discover nearby places of worship,
+        connect with local communities, and access simple learning
+        tools in one welcoming space.
+    </p>
 
-        <nav class="main-nav" aria-label="Main navigation">
-            <a href="/">Home</a>
-            <a href="/location">Find Community</a>
-            <a href="/muslim-dashboard">Muslim Dashboard</a>
-        </nav>
-    </div>        
-    </header>
-
-    <main>
-         <h1>Faithful</h1>
-<p>Home page is connected successfully.</p>
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text">
-                <p class="eyebrow">Connect. Learn. Grow.</p>
-
-                <h1>
-                    Take the next step in your faith journey.
-                </h1>
-
-                <p class="hero-description">
-                    Faithful helps users discover nearby places of worship,
-                    connect with local communities, and access simple learning
-                    tools in one welcoming space.
-                </p>
-
-                <a href="#religion-selection" class="primary-button">
-                    Get Started
-                </a>
-            </div>
-        </div>
-    </section>
-<section id="religion-selection" class="selection-section">
-    <div class="container">
-
-        <div class="selection-card">
-
-            <h2>Select Your Religion</h2>
-
-            <p>
-                Choose the religion you practice or would like to
-                learn more about.
-            </p>
-
-            <form action="/select-religion" method="POST">
-
-                <label for="religion">
-                    Religion
-                </label>
-
-                <select
-                    id="religion"
-                    name="religion"
-                    required
-                >
-                    <option value="">
-                        -- Select One --
-                    </option>
-
-                    <option value="Islam">
-                        Islam
-                    </option>
-
-                    <option value="Christianity">
-                        Christianity
-                    </option>
-
-                    <option value="Judaism">
-                        Judaism
-                    </option>
-
-                    <option value="Hinduism">
-                        Hinduism
-                    </option>
-
-                    <option value="Buddhism">
-                        Buddhism
-                    </option>
-
-                    <option value="Sikhism">
-                        Sikhism
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-
-                <label for="other_religion">
-                    Other Religion
-                </label>
-
-                <input
-                    type="text"
-                    id="other_religion"
-                    name="other_religion"
-                    placeholder="Enter religion if not listed"
-                >
-
-                <button
-                    type="submit"
-                    class="primary-button"
-                >
-                    Continue
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
+    <a href="#religion-selection">Get Started</a>
 </section>
-    </main>
-    <footer>
-        <!-- Footer content will be added later -->
-    </footer>
-</body>
-</html>
+
+<section id="religion-selection" class="religion-selection">
+    <h2>Select Your Religion</h2>
+
+    <p>
+        Choose the religion you practice or would like to learn more about.
+    </p>
+
+    <form action="{{ url_for('select_religion') }}" method="post">
+        <div>
+            <label for="religion">Religion</label>
+
+            <select id="religion" name="religion" required>
+                <option value="">Select one</option>
+                <option value="islam">Islam</option>
+                <option value="christianity">Christianity</option>
+                <option value="judaism">Judaism</option>
+                <option value="hinduism">Hinduism</option>
+                <option value="buddhism">Buddhism</option>
+                <option value="sikhism">Sikhism</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="other_religion">
+                Other religion
+                <span>(optional)</span>
+            </label>
+
+            <input
+                type="text"
+                id="other_religion"
+                name="other_religion"
+                placeholder="Enter a religion not listed"
+            >
+        </div>
+
+        <button type="submit">Continue</button>
+    </form>
+</section>
+{% endblock %}
