@@ -1,12 +1,12 @@
 #app.py 
 import os 
-from flask import Flask 
+from flask import Flask, render_template
 from models import db 
 
 
 #for day 1, just making sure flask connects 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="services")
 
     app.config["SECRET_KEY"] = os.environ.get(
         "SECRET_KEY",
@@ -24,7 +24,7 @@ def create_app():
 
     @app.route("/")
     def home():
-        return ("home.html")
+        return render_template("home.html")
 
     return app
 
@@ -133,5 +133,4 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
