@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Log in</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     {% for category, message in get_flashed_messages(with_categories=true) %}
