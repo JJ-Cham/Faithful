@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | Faithful{% endblock %}
+
+{% block content %}
+
+<section class="profile-page">
+
+    <h1>My Profile</h1>
+
+    <p>
+        View your saved account information below.
+    </p>
+
+    <section class="profile-card">
+
+        <h2>Account Information</h2>
+
+        <p>
+            <strong>Name:</strong>
+            {{ user.name }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ user.email }}
+        </p>
+
+        <p>
+            <strong>Religion:</strong>
+            {{ user.selected_religion or "Not selected" }}
+        </p>
+
+        <p>
+            <strong>City:</strong>
+            {{ user.city or "Not provided" }}
+        </p>
+
+        <p>
+            <strong>State:</strong>
+            {{ user.state or "Not provided" }}
+        </p>
+
+        <p>
+            <strong>Country:</strong>
+            {{ user.country or "Not provided" }}
+        </p>
+
+    </section>
+
+</section>
+
+{% endblock %}
