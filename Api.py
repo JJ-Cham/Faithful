@@ -4,10 +4,20 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv()
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+RELIGION_KEYWORD_MAP = {
+    "Islam": "mosque OR islamic center",
+    "Christianity": "church OR cathedral",
+    "Judaism": "synagogue OR Jewish community center",
+    "Hinduism": "Hindu temple OR mandir",
+    "Buddhism": "Buddhist temple OR monastery",
+    "Sikhism": "gurdwara OR Sikh temple"
+}
 
 class IslamicAPIService:
     ALADHAN_BASE_URL = os.getenv("ALADHAN_API_BASE_URL", "https://api.aladhan.com/v1")
@@ -61,6 +71,55 @@ class IslamicAPIService:
             },
             "hijri_date": "Date Unavailable"
         }
+
+    @classmethod
+    def get_live_community_places(cls, religion_choice, latitude, longitude):
+        if not cls.MAPS_KEY or cls.MAPS_KEY.startswith("mock_"):
+            logger.info("Using mock community data (No valid Google Maps key configured).")
+            return cls.get_mock_community_data(religion_choice)
+
+        search_query = RELIGION_KEYWORD_MAP.get(religion_choice, "place of worship")
+        url = "https://places.googleapis.com/v1/places:searchText"
+        
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": cls.MAPS_KEY,
+            "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.googleMapsUri"
+        }
+
+        payload = {
+            "textQuery": search_query,
+            "locationBias": {
+                "circle": {
+                    "center": {
+                        "latitude": latitude,
+                        "longitude": longitude
+                    },
+                    "radius": 15000.0
+                }
+            }
+        }
+
+        try:
+            response = requests.post(url, json=payload, headers=headers, timeout=cls.TIMEOUT_LIMIT)
+            if response.status_code == 200:
+                results = response.json().get("places", [])
+                places_list = []
+                
+                for place in results:
+                    places_list.append({
+                        "name": place.get("displayName", {}).get("text", "N/A"),
+                        "address": place.get("formattedAddress", "Address Unavailable"),
+                        "phone": place.get("nationalPhoneNumber", "N/A"),
+                        "maps_link": place.get("googleMapsUri", "#")
+                    })
+                return places_list
+                
+            logger.error(f"Google Places API Error: {response.status_code}")
+        except requests.exceptions.RequestException as error:
+            logger.error(f"Google Places Request Failed: {str(error)}")
+
+        return cls.get_mock_community_data(religion_choice)
 
     @staticmethod
     def get_verified_daily_reminder():
@@ -120,22 +179,37 @@ class IslamicAPIService:
     def get_mock_community_data(religion_choice):
         mock_database = {
             "Islam": [
-                {"name": "Central Community Masjid", "address": "123 Faith Way, Atlanta, GA", "distance": "1.2 miles", "phone": "404-555-0199"},
-                {"name": "Downtown Islamic Center", "address": "789 Peace St, Atlanta, GA", "distance": "3.5 miles", "phone": "404-555-0142"}
+                {"name": "Central Community Masjid", "address": "123 Faith Way, Atlanta, GA", "distance": "1.2 miles", "phone": "404-555-0199", "maps_link": "#"},
+                {"name": "Downtown Islamic Center", "address": "789 Peace St, Atlanta, GA", "distance": "3.5 miles", "phone": "404-555-0142", "maps_link": "#"}
             ],
             "Christianity": [
-                {"name": "Grace Fellowship Church", "address": "456 Hope Blvd, Atlanta, GA", "distance": "2.1 miles", "phone": "404-555-0122"}
+                {"name": "Grace Fellowship Church", "address": "456 Hope Blvd, Atlanta, GA", "distance": "2.1 miles", "phone": "404-555-0122", "maps_link": "#"}
             ],
             "Judaism": [
-                {"name": "B'nai Israel Synagogue", "address": "555 Shalom Dr, Atlanta, GA", "distance": "4.0 miles", "phone": "404-555-0177"}
+                {"name": "B'nai Israel Synagogue", "address": "555 Shalom Dr, Atlanta, GA", "distance": "4.0 miles", "phone": "404-555-0177", "maps_link": "#"}
             ]
         }
         return mock_database.get(religion_choice, [])
+
+
 if __name__ == "__main__":
     print("--- STARTING API LIVE TESTS ---")
-    
-    # Test Atlanta coordinates
+
+    print("--- TESTING GOOGLE PLACES COMMUNITY FINDER ---")
     test_lat, test_lon = 33.7490, -84.3880
+    test_religion = "Islam"
+    
+    print(f"\nSearching places of worship for '{test_religion}' near Lat: {test_lat}, Lon: {test_lon}...")
+    results = IslamicAPIService.get_live_community_places(test_religion, test_lat, test_lon)
+    
+    print(f"\nTotal Places Found: {len(results)}")
+    for idx, place in enumerate(results, start=1):
+        print(f"\n[{idx}] {place['name']}")
+        print(f"    Address: {place['address']}")
+        print(f"    Phone:   {place['phone']}")
+        print(f"    Link:    {place.get('maps_link', '#')}")
+        
+    print("\n--- GOOGLE PLACES TEST COMPLETE ---")
     
     print(f"\n[TEST 1] Fetching live prayer times for Lat: {test_lat}, Lon: {test_lon}...")
     prayer_result = IslamicAPIService.get_prayer_times_and_date(test_lat, test_lon)
