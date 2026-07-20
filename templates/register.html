@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+
+    <h1>Create account</h1>
+
+    <form method="POST">
+        <input
+            name="name"
+            value="{{ name or '' }}"
+            placeholder="Name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            value="{{ email or '' }}"
+            placeholder="Email"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+        >
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm password"
+            required
+        >
+
+        <input
+            type="hidden"
+            name="selected_religion"
+            value="{{ selected_religion or session.get('selected_religion', '') }}"
+        >
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

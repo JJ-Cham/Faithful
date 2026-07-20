@@ -12,6 +12,7 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 
+from Api import IslamicAPIService
 from models import User, db
 
 
@@ -31,6 +32,14 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     db.init_app(app)
+
+    def get_logged_in_user():
+        user_id = session.get("user_id")
+
+        if user_id is None:
+            return None
+
+        return db.session.get(User, user_id)
 
     @app.route("/")
     def home():
@@ -166,7 +175,7 @@ def create_app(test_config=None):
 
         return redirect(url_for("community"))
 
-    @app.route("/logout", methods=["POST", "GET"])
+    @app.route("/logout", methods=["GET", "POST"])
     def logout():
         session.clear()
         flash("You have been logged out.", "success")
@@ -240,6 +249,21 @@ def create_app(test_config=None):
             country=session.get("country"),
         )
 
+    @app.route("/dashboard")
+    def dashboard():
+        prayer_data = IslamicAPIService.get_prayer_times_and_date(
+            40.7128,
+            -74.0060,
+        )
+
+        reminder = IslamicAPIService.get_verified_daily_reminder()
+
+        return render_template(
+            "dashboard.html",
+            prayer_data=prayer_data,
+            reminder=reminder,
+        )
+
     @app.route("/profile")
     def profile():
         user = get_logged_in_user()
@@ -250,13 +274,27 @@ def create_app(test_config=None):
 
         return render_template("profile.html", user=user)
 
-    def get_logged_in_user():
-        user_id = session.get("user_id")
+    @app.route("/api/prayer-times")
+    def prayer_times():
+        latitude = request.args.get(
+            "latitude",
+            default=40.7128,
+            type=float,
+        )
+        longitude = request.args.get(
+            "longitude",
+            default=-74.0060,
+            type=float,
+        )
 
-        if user_id is None:
-            return None
+        return IslamicAPIService.get_prayer_times_and_date(
+            latitude,
+            longitude,
+        )
 
-        return db.session.get(User, user_id)
+    @app.route("/api/daily-reminder")
+    def daily_reminder():
+        return IslamicAPIService.get_verified_daily_reminder()
 
     return app
 
