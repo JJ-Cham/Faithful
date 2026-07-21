@@ -163,7 +163,7 @@ class IslamicAPIService:
                 "options": ["Shahada", "Salah", "Zakat", "Hajj"],
                 "correct_answer": "Zakat",
                 "explanation": "Zakat represents a fixed percentage portion of wealth given away to designated charitable categories.",
-                "source": "Surah At-Tawbah [3:60]"
+                "source": "Surah At-Tawbah [9:60]"
             },
             {
                 "id": 5,

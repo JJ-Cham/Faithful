@@ -1,5 +1,5 @@
 from app import create_app
-from models import db
+from models import db, QuizAttempt, User
 
 
 def build_test_app():

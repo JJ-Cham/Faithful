@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Faithful{% endblock %}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <header class="site-header">
+        <a href="{{ url_for('home') }}" class="logo">
+            Faithful
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+
+            <span class="nav-divider" aria-hidden="true">|</span>
+
+            <a href="{{ url_for('community') }}">
+                Community
+            </a>
+
+            {% if session.get('selected_religion', '')|lower == 'islam' %}
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('dashboard') }}">
+                    Dashboard
+                </a>
+
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('quiz') }}">
+                    Quiz
+                </a>
+            {% endif %}
+
+            {% if session.get('user_id') %}
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('profile') }}">
+                    Profile
+                </a>
+
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('logout') }}">
+                    Log Out
+                </a>
+            {% else %}
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('login') }}">
+                    Log In
+                </a>
+
+                <span class="nav-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('register') }}">
+                    Register
+                </a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <section class="flash-messages" aria-live="polite">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </section>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Faithful</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Islamic Quiz | Faithful{% endblock %}
+
+{% block content %}
+
+<section class="quiz-page page-shell">
+
+    <header class="quiz-header">
+        <div>
+            <p class="eyebrow">Learn and reflect</p>
+            <h1>Islamic Quiz</h1>
+
+            <p>
+                Test your knowledge with short, sourced questions
+                about foundational Islamic topics.
+            </p>
+        </div>
+    </header>
+
+    {% if submitted %}
+
+        <section class="card quiz-score-summary">
+            <p class="stat-label">Your score</p>
+
+            <p class="stat-value">
+                {{ score }} / {{ total }}
+            </p>
+
+            {% if score == total %}
+                <p>Excellent work! You answered every question correctly.</p>
+            {% elif score >= 3 %}
+                <p>Great job! Review the explanations below to keep learning.</p>
+            {% else %}
+                <p>
+                    Good effort. Review the answers and sources below,
+                    then try again.
+                </p>
+            {% endif %}
+        </section>
+
+        <section class="quiz-results">
+            <h2>Answers and Sources</h2>
+
+            {% for result in results %}
+                <article
+                    class="card quiz-result-item
+                    {% if result.is_correct %}
+                        correct-result
+                    {% else %}
+                        incorrect-result
+                    {% endif %}"
+                >
+                    <h3>
+                        {{ loop.index }}. {{ result.question }}
+                    </h3>
+
+                    <p>
+                        <strong>Your answer:</strong>
+
+                        {% if result.selected_answer %}
+                            {{ result.selected_answer }}
+                        {% else %}
+                            No answer selected
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Correct answer:</strong>
+                        {{ result.correct_answer }}
+                    </p>
+
+                    {% if result.is_correct %}
+                        <p class="result-message correct-message">
+                            Correct
+                        </p>
+                    {% else %}
+                        <p class="result-message incorrect-message">
+                            Incorrect
+                        </p>
+                    {% endif %}
+
+                    <div class="answer-explanation">
+                        <p>
+                            <strong>Explanation:</strong>
+                            {{ result.explanation }}
+                        </p>
+
+                        <p class="source-text">
+                            <strong>Source:</strong>
+                            {{ result.source }}
+                        </p>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <div class="quiz-actions">
+            <a class="button" href="{{ url_for('quiz') }}">
+                Retake Quiz
+            </a>
+
+            <a
+                class="button button-outline"
+                href="{{ url_for('profile') }}"
+            >
+                View Profile
+            </a>
+
+            <a
+                class="button button-outline"
+                href="{{ url_for('dashboard') }}"
+            >
+                Return to Dashboard
+            </a>
+        </div>
+
+    {% else %}
+
+        <form method="POST" action="{{ url_for('quiz') }}">
+
+            {% for question in questions %}
+                <section class="card quiz-card">
+
+                    <p class="question-number">
+                        Question {{ loop.index }} of {{ questions|length }}
+                    </p>
+
+                    <h2>{{ question.question }}</h2>
+
+                    <div class="answer-list">
+                        {% for option in question.options %}
+                            <label class="answer-option">
+                                <input
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="{{ option }}"
+                                    required
+                                >
+
+                                <span class="answer-letter">
+                                    {{ "ABCD"[loop.index0] }}
+                                </span>
+
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                </section>
+            {% endfor %}
+
+            <button class="button-full" type="submit">
+                Submit Quiz
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

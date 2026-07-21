@@ -47,7 +47,33 @@
         </p>
 
     </section>
+        <section class="card">
+        <h2>Quiz Progress</h2>
 
+        {% if latest_quiz_score is not none %}
+            <p>
+                Latest score:
+                <strong>
+                    {{ latest_quiz_score }} / {{ latest_quiz_total }}
+                </strong>
+            </p>
+
+            <p>
+                Total points:
+                <strong>{{ user.total_points }}</strong>
+            </p>
+
+            <a class="button" href="{{ url_for('quiz') }}">
+                Take Quiz Again
+            </a>
+        {% else %}
+            <p>You have not completed a quiz yet.</p>
+
+            <a class="button" href="{{ url_for('quiz') }}">
+                Take Your First Quiz
+            </a>
+        {% endif %}
+    </section>
 </section>
 
 {% endblock %}

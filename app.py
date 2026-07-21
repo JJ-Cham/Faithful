@@ -13,11 +13,11 @@ from flask import (
 from sqlalchemy.exc import IntegrityError
 
 from Api import IslamicAPIService
-from models import User, db
+from models import db, User, QuizAttempt
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, template_folder="services")
+    app = Flask(__name__, template_folder="templates")
 
     app.config.update(
         SECRET_KEY=os.environ.get(
@@ -275,26 +275,28 @@ def create_app(test_config=None):
     @app.route("/quiz", methods=["GET", "POST"])
     def quiz():
         questions = IslamicAPIService.get_verified_quiz_questions()
-        score = None
-        results = []
 
         if request.method == "POST":
             score = 0
+            results = []
 
             for question in questions:
-                user_answer = request.form.get(
-                    f"answer_{question['id']}",
-                    "",
+                selected_answer = request.form.get(
+                    f"question_{question['id']}"
                 )
-                is_correct = user_answer == question["correct_answer"]
+
+                is_correct = (
+                    selected_answer == question["correct_answer"]
+                )
 
                 if is_correct:
                     score += 1
 
                 results.append(
                     {
+                        "id": question["id"],
                         "question": question["question"],
-                        "user_answer": user_answer,
+                        "selected_answer": selected_answer,
                         "correct_answer": question["correct_answer"],
                         "is_correct": is_correct,
                         "explanation": question["explanation"],
@@ -302,15 +304,33 @@ def create_app(test_config=None):
                     }
                 )
 
-            session["last_quiz_score"] = score
-            session["last_quiz_total"] = len(questions)
+            total = len(questions)
+
+            session["latest_quiz_score"] = score
+            session["latest_quiz_total"] = total
+
+            user = get_logged_in_user()
+
+            if user:
+                user.total_points = (user.total_points or 0) + score
+                db.session.commit()
+
+            return render_template(
+                "quiz.html",
+                questions=questions,
+                submitted=True,
+                score=score,
+                total=total,
+                results=results,
+            )
 
         return render_template(
             "quiz.html",
             questions=questions,
-            score=score,
-            total_questions=len(questions),
-            results=results,
+            submitted=False,
+            score=None,
+            total=len(questions),
+            results=[],
         )
 
     @app.route("/future-support")
@@ -325,7 +345,12 @@ def create_app(test_config=None):
             flash("Please log in to view your profile.", "error")
             return redirect(url_for("login"))
 
-        return render_template("profile.html", user=user)
+        return render_template(
+            "profile.html",
+            user=user,
+            latest_quiz_score=session.get("latest_quiz_score"),
+            latest_quiz_total=session.get("latest_quiz_total"),
+        )
 
     @app.route("/api/prayer-times")
     def prayer_times():
@@ -389,4 +414,6 @@ app = create_app()
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(host="0.0.0.0", port=5000, debug=True)
