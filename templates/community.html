@@ -27,24 +27,63 @@
     </section>
 
     <section class="community-results">
-
         <h2>Nearby Communities</h2>
 
-        <p>
-            Community search results will appear here after
-            location services and the Places API are connected.
-        </p>
+        {% if used_default_location %}
+            <div class="flash-message warning">
+                Exact coordinates for {{ city }} are not available in the
+                current MVP. Showing demonstration results instead.
+            </div>
+        {% endif %}
 
-        <article class="community-card">
+        {% if places %}
+            <div class="community-list">
+                {% for place in places %}
+                    <article class="community-card">
+                        <h3>{{ place.name }}</h3>
 
-            <h3>Example Place of Worship</h3>
+                        <p>
+                            <strong>Address:</strong>
+                            {{ place.address }}
+                        </p>
 
-            <p>Address will appear here.</p>
+                        {% if place.distance %}
+                            <p>
+                                <strong>Distance:</strong>
+                                {{ place.distance }}
+                            </p>
+                        {% endif %}
 
-            <p>Distance will appear here.</p>
+                        <p>
+                            <strong>Phone:</strong>
+                            {{ place.phone or "Not available" }}
+                        </p>
 
-        </article>
+                        {% if place.maps_link and place.maps_link != "#" %}
+                            <a
+                                class="button button-outline"
+                                href="{{ place.maps_link }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View Directions
+                            </a>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card">
+                <p>
+                    No nearby communities were found for
+                    {{ religion }} in {{ city }}.
+                </p>
 
+                <a class="button" href="{{ url_for('location') }}">
+                    Update Religion or Location
+                </a>
+            </div>
+        {% endif %}
     </section>
 
 </section>

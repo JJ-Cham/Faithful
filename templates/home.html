@@ -1,60 +1,80 @@
 {% extends "base.html" %}
 
-{% block title %}Home | Faithful{% endblock %}
+{% block title %}Community Guidelines | Faithful{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <p>Connect. Learn. Grow.</p>
+<section class="guidelines-page page-shell">
+    <div class="card guidelines-card">
+        <p class="eyebrow">Welcome to Faithful</p>
 
-    <h1>Take the next step in your faith journey.</h1>
+        <h1>Community Guidelines</h1>
 
-    <p>
-        Faithful helps users discover nearby places of worship,
-        connect with local communities, and access simple learning
-        tools in one welcoming space.
-    </p>
+        <p>
+            Faithful is a respectful space for learning about faith,
+            discovering local communities, and building positive connections.
+        </p>
 
-    <a href="#religion-selection">Get Started</a>
-</section>
+        <div class="guidelines-list">
+            <article>
+                <h2>Respect every faith</h2>
+                <p>
+                    Treat all religions, traditions, and community members
+                    with dignity and respect.
+                </p>
+            </article>
 
-<section id="religion-selection" class="religion-selection">
-    <h2>Select Your Religion</h2>
+            <article>
+                <h2>Use information responsibly</h2>
+                <p>
+                    Faithful provides educational information and does not
+                    replace guidance from qualified religious leaders.
+                </p>
+            </article>
 
-    <p>
-        Choose the religion you practice or would like to learn more about.
-    </p>
+            <article>
+                <h2>Protect your privacy</h2>
+                <p>
+                    Only provide the location information needed to find
+                    communities near you.
+                </p>
+            </article>
 
-    <form action="{{ url_for('select_religion') }}" method="post">
-        <div>
-            <label for="religion">Religion</label>
-
-            <select id="religion" name="religion" required>
-                <option value="">Select one</option>
-                <option value="islam">Islam</option>
-                <option value="christianity">Christianity</option>
-                <option value="judaism">Judaism</option>
-                <option value="hinduism">Hinduism</option>
-                <option value="buddhism">Buddhism</option>
-                <option value="sikhism">Sikhism</option>
-                <option value="other">Other</option>
-            </select>
+            <article>
+                <h2>Keep the community safe</h2>
+                <p>
+                    Do not use Faithful to promote harassment, hatred,
+                    misinformation, or discrimination.
+                </p>
+            </article>
         </div>
 
-        <div>
-            <label for="other_religion">
-                Other religion
-                <span>(optional)</span>
+        <form
+            action="{{ url_for('accept_guidelines') }}"
+            method="post"
+        >
+            <label class="guideline-agreement">
+                <input
+                    type="checkbox"
+                    name="agree"
+                    value="yes"
+                    required
+                >
+
+                <span>
+                    I have read and agree to follow the Faithful
+                    community guidelines.
+                </span>
             </label>
 
-            <input
-                type="text"
-                id="other_religion"
-                name="other_religion"
-                placeholder="Enter a religion not listed"
-            >
-        </div>
+            <button class="button-full" type="submit">
+                Agree and Continue
+            </button>
+        </form>
 
-        <button type="submit">Continue</button>
-    </form>
+        <p class="form-footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+    </div>
 </section>
 {% endblock %}

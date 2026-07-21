@@ -21,50 +21,32 @@
         <nav class="main-nav" aria-label="Main navigation">
             <a href="{{ url_for('home') }}">Home</a>
 
-            <span class="nav-divider" aria-hidden="true">|</span>
+            {% if session.get("user_id") %}
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('community') }}">Community</a>
 
-            <a href="{{ url_for('community') }}">
-                Community
-            </a>
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('location') }}">Preferences</a>
 
-            {% if session.get('selected_religion', '')|lower == 'islam' %}
-                <span class="nav-divider" aria-hidden="true">|</span>
+                {% if session.get("selected_religion", "")|lower == "islam" %}
+                    <span class="nav-divider">|</span>
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
 
-                <a href="{{ url_for('dashboard') }}">
-                    Dashboard
-                </a>
+                    <span class="nav-divider">|</span>
+                    <a href="{{ url_for('quiz') }}">Quiz</a>
+                {% endif %}
 
-                <span class="nav-divider" aria-hidden="true">|</span>
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('profile') }}">Profile</a>
 
-                <a href="{{ url_for('quiz') }}">
-                    Quiz
-                </a>
-            {% endif %}
-
-            {% if session.get('user_id') %}
-                <span class="nav-divider" aria-hidden="true">|</span>
-
-                <a href="{{ url_for('profile') }}">
-                    Profile
-                </a>
-
-                <span class="nav-divider" aria-hidden="true">|</span>
-
-                <a href="{{ url_for('logout') }}">
-                    Log Out
-                </a>
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('logout') }}">Log Out</a>
             {% else %}
-                <span class="nav-divider" aria-hidden="true">|</span>
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('login') }}">Log In</a>
 
-                <a href="{{ url_for('login') }}">
-                    Log In
-                </a>
-
-                <span class="nav-divider" aria-hidden="true">|</span>
-
-                <a href="{{ url_for('register') }}">
-                    Register
-                </a>
+                <span class="nav-divider">|</span>
+                <a href="{{ url_for('register') }}">Register</a>
             {% endif %}
         </nav>
     </header>
