@@ -159,6 +159,7 @@ class IslamicAPIService:
 
         payload = {
             "textQuery": search_query,
+            "maxResultCount": 5,
             "locationBias": {
                 "circle": {
                     "center": {
@@ -179,7 +180,7 @@ class IslamicAPIService:
             )
 
             if response.status_code == 200:
-                results = response.json().get("places", [])
+                results = response.json().get("places", [])[:5]
                 places_list = []
 
                 for place in results:
