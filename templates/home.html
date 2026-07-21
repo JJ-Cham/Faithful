@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Community Guidelines | Faithful{% endblock %}
+
+{% block content %}
+<section class="guidelines-page page-shell">
+    <div class="card guidelines-card">
+        <p class="eyebrow">Welcome to Faithful</p>
+
+        <h1>Community Guidelines</h1>
+
+        <p>
+            Faithful is a respectful space for learning about faith,
+            discovering local communities, and building positive connections.
+        </p>
+
+        <div class="guidelines-list">
+            <article>
+                <h2>Respect every faith</h2>
+                <p>
+                    Treat all religions, traditions, and community members
+                    with dignity and respect.
+                </p>
+            </article>
+
+            <article>
+                <h2>Use information responsibly</h2>
+                <p>
+                    Faithful provides educational information and does not
+                    replace guidance from qualified religious leaders.
+                </p>
+            </article>
+
+            <article>
+                <h2>Protect your privacy</h2>
+                <p>
+                    Only provide the location information needed to find
+                    communities near you.
+                </p>
+            </article>
+
+            <article>
+                <h2>Keep the community safe</h2>
+                <p>
+                    Do not use Faithful to promote harassment, hatred,
+                    misinformation, or discrimination.
+                </p>
+            </article>
+        </div>
+
+        <form
+            action="{{ url_for('accept_guidelines') }}"
+            method="post"
+        >
+            <label class="guideline-agreement">
+                <input
+                    type="checkbox"
+                    name="agree"
+                    value="yes"
+                    required
+                >
+
+                <span>
+                    I have read and agree to follow the Faithful
+                    community guidelines.
+                </span>
+            </label>
+
+            <button class="button-full" type="submit">
+                Agree and Continue
+            </button>
+        </form>
+
+        <p class="form-footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

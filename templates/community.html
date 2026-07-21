@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Find Community | Faithful{% endblock %}
+
+{% block content %}
+
+<section class="community-page">
+
+    <h1>Find Your Community</h1>
+
+    <p>
+        Faithful helps you discover nearby places of worship
+        based on your selected religion and location.
+    </p>
+
+    <section class="current-location">
+
+        <h2>Your Current Information</h2>
+
+        <ul>
+            <li><strong>Religion:</strong> {{ religion or "Not selected" }}</li>
+            <li><strong>City:</strong> {{ city or "Not provided" }}</li>
+            <li><strong>State:</strong> {{ state or "Not provided" }}</li>
+            <li><strong>Country:</strong> {{ country or "Not provided" }}</li>
+        </ul>
+
+    </section>
+
+    <section class="community-results">
+        <h2>Nearby Communities</h2>
+
+        <!-- {% if used_default_location %}
+            <div class="flash-message warning">
+                Exact coordinates for {{ city }} are not available in the
+                current MVP. Showing demonstration results instead.
+            </div>
+        {% endif %} -->
+        {% if using_mock_data %}
+            <div class="flash-message warning">
+                Live place search is not configured.
+                These are demonstration listings for {{ city }}.
+            </div>
+        {% endif %}
+        
+        {% if places %}
+            <div class="community-list">
+                {% for place in places %}
+                    <article class="community-card">
+                        <h3>{{ place.name }}</h3>
+
+                        <p>
+                            <strong>Address:</strong>
+                            {{ place.address }}
+                        </p>
+
+                        {% if place.distance %}
+                            <p>
+                                <strong>Distance:</strong>
+                                {{ place.distance }}
+                            </p>
+                        {% endif %}
+
+                        <p>
+                            <strong>Phone:</strong>
+                            {{ place.phone or "Not available" }}
+                        </p>
+
+                        {% if place.maps_link and place.maps_link != "#" %}
+                            <a
+                                class="button button-outline"
+                                href="{{ place.maps_link }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View Directions
+                            </a>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card">
+                <p>
+                    No nearby communities were found for
+                    {{ religion }} in {{ city }}.
+                </p>
+
+                <a class="button" href="{{ url_for('location') }}">
+                    Update Religion or Location
+                </a>
+            </div>
+        {% endif %}
+    </section>
+
+</section>
+
+{% endblock %}

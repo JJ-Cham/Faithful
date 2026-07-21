@@ -49,19 +49,65 @@ class User(db.Model):
         nullable=True,
     )
 
+    total_points = db.Column(
+        db.Integer,
+        nullable=False,
+        default=0,
+    )
+
     created_at = db.Column(
         db.DateTime,
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
 
+    quiz_attempts = db.relationship(
+        "QuizAttempt",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
     def set_password(self, password):
-        """Hash and store the user's password."""
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        """Return True when the entered password matches the stored hash."""
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(
+            self.password_hash,
+            password,
+        )
 
-    def __repr__(self):
-        return f"<User {self.email}>"
+
+class QuizAttempt(db.Model):
+    __tablename__ = "quiz_attempts"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    score = db.Column(
+        db.Integer,
+        nullable=False,
+    )
+
+    total_questions = db.Column(
+        db.Integer,
+        nullable=False,
+    )
+
+    completed_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False,
+    )
+
+    user = db.relationship(
+        "User",
+        back_populates="quiz_attempts",
+    )

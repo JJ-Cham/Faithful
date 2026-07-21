@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Personalize Your Experience | Faithful{% endblock %}
+
+{% block content %}
+<section class="location-page page-shell">
+    <div class="card form-card">
+        <p class="eyebrow">Step 2 of 2</p>
+
+        <h1>Personalize Your Experience</h1>
+
+        <p>
+            Select a religion and enter your location so Faithful
+            can recommend relevant places of worship near you.
+        </p>
+
+        <form action="{{ url_for('save_location') }}" method="post">
+            <div class="form-group">
+                <label for="religion">Religion</label>
+
+                <select id="religion" name="religion" required>
+                    <option value="">Select one</option>
+
+                    <option
+                        value="Islam"
+                        {% if religion == "Islam" %}selected{% endif %}
+                    >
+                        Islam
+                    </option>
+
+                    <option
+                        value="Christianity"
+                        {% if religion == "Christianity" %}selected{% endif %}
+                    >
+                        Christianity
+                    </option>
+
+                    <option
+                        value="Judaism"
+                        {% if religion == "Judaism" %}selected{% endif %}
+                    >
+                        Judaism
+                    </option>
+
+                    <option
+                        value="Hinduism"
+                        {% if religion == "Hinduism" %}selected{% endif %}
+                    >
+                        Hinduism
+                    </option>
+
+                    <option
+                        value="Buddhism"
+                        {% if religion == "Buddhism" %}selected{% endif %}
+                    >
+                        Buddhism
+                    </option>
+
+                    <option
+                        value="Sikhism"
+                        {% if religion == "Sikhism" %}selected{% endif %}
+                    >
+                        Sikhism
+                    </option>
+
+                    <option
+                        value="Other"
+                        {% if religion == "Other" %}selected{% endif %}
+                    >
+                        Other
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="other_religion">
+                    Other religion
+                    <span class="optional-text">(optional)</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="other_religion"
+                    name="other_religion"
+                    placeholder="Enter a religion not listed"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="city">City</label>
+
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value="{{ city|default('') }}"
+                    autocomplete="address-level2"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="state">State or region</label>
+
+                <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    value="{{ state|default('') }}"
+                    autocomplete="address-level1"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+
+                <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    value="{{ country|default('United States') }}"
+                    autocomplete="country-name"
+                    required
+                >
+            </div>
+
+            <button class="button-full" type="submit">
+                Save and Find Communities
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

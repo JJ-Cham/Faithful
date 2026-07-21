@@ -72,19 +72,89 @@ class IslamicAPIService:
             "hijri_date": "Date Unavailable"
         }
 
-    @classmethod
-    def get_live_community_places(cls, religion_choice, latitude, longitude):
-        if not cls.MAPS_KEY or cls.MAPS_KEY.startswith("mock_"):
-            logger.info("Using mock community data (No valid Google Maps key configured).")
-            return cls.get_mock_community_data(religion_choice)
+    # @classmethod
+    # def get_live_community_places(cls, religion_choice, latitude, longitude):
+    #     if not cls.MAPS_KEY or cls.MAPS_KEY.startswith("mock_"):
+    #         logger.info("Using mock community data (No valid Google Maps key configured).")
+    #         return cls.get_mock_community_data(religion_choice)
 
-        search_query = RELIGION_KEYWORD_MAP.get(religion_choice, "place of worship")
-        url = "https://places.googleapis.com/v1/places:searchText"
+    #     search_query = RELIGION_KEYWORD_MAP.get(religion_choice, "place of worship")
+    #     url = "https://places.googleapis.com/v1/places:searchText"
         
+    #     headers = {
+    #         "Content-Type": "application/json",
+    #         "X-Goog-Api-Key": cls.MAPS_KEY,
+    #         "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.googleMapsUri"
+    #     }
+
+    #     payload = {
+    #         "textQuery": search_query,
+    #         "locationBias": {
+    #             "circle": {
+    #                 "center": {
+    #                     "latitude": latitude,
+    #                     "longitude": longitude
+    #                 },
+    #                 "radius": 15000.0
+    #             }
+    #         }
+    #     }
+
+    #     try:
+    #         response = requests.post(url, json=payload, headers=headers, timeout=cls.TIMEOUT_LIMIT)
+    #         if response.status_code == 200:
+    #             results = response.json().get("places", [])
+    #             places_list = []
+                
+    #             for place in results:
+    #                 places_list.append({
+    #                     "name": place.get("displayName", {}).get("text", "N/A"),
+    #                     "address": place.get("formattedAddress", "Address Unavailable"),
+    #                     "phone": place.get("nationalPhoneNumber", "N/A"),
+    #                     "maps_link": place.get("googleMapsUri", "#")
+    #                 })
+    #             return places_list
+                
+    #         logger.error(f"Google Places API Error: {response.status_code}")
+    #     except requests.exceptions.RequestException as error:
+    #         logger.error(f"Google Places Request Failed: {str(error)}")
+
+    #     return cls.get_mock_community_data(religion_choice)
+
+    @classmethod
+    def get_live_community_places(
+        cls,
+        religion_choice,
+        latitude,
+        longitude,
+        city=None,
+    ):
+        if not cls.MAPS_KEY or cls.MAPS_KEY.startswith("mock_"):
+            logger.info(
+                "Using mock community data "
+                "(No valid Google Maps key configured)."
+            )
+            return cls.get_mock_community_data(
+                religion_choice,
+                city,
+            )
+
+        search_query = RELIGION_KEYWORD_MAP.get(
+            religion_choice,
+            "place of worship",
+        )
+
+        url = "https://places.googleapis.com/v1/places:searchText"
+
         headers = {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": cls.MAPS_KEY,
-            "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.googleMapsUri"
+            "X-Goog-FieldMask": (
+                "places.displayName,"
+                "places.formattedAddress,"
+                "places.nationalPhoneNumber,"
+                "places.googleMapsUri"
+            ),
         }
 
         payload = {
@@ -93,34 +163,66 @@ class IslamicAPIService:
                 "circle": {
                     "center": {
                         "latitude": latitude,
-                        "longitude": longitude
+                        "longitude": longitude,
                     },
-                    "radius": 15000.0
+                    "radius": 15000.0,
                 }
-            }
+            },
         }
 
         try:
-            response = requests.post(url, json=payload, headers=headers, timeout=cls.TIMEOUT_LIMIT)
+            response = requests.post(
+                url,
+                json=payload,
+                headers=headers,
+                timeout=cls.TIMEOUT_LIMIT,
+            )
+
             if response.status_code == 200:
                 results = response.json().get("places", [])
                 places_list = []
-                
+
                 for place in results:
-                    places_list.append({
-                        "name": place.get("displayName", {}).get("text", "N/A"),
-                        "address": place.get("formattedAddress", "Address Unavailable"),
-                        "phone": place.get("nationalPhoneNumber", "N/A"),
-                        "maps_link": place.get("googleMapsUri", "#")
-                    })
+                    places_list.append(
+                        {
+                            "name": place.get(
+                                "displayName",
+                                {},
+                            ).get("text", "N/A"),
+                            "address": place.get(
+                                "formattedAddress",
+                                "Address unavailable",
+                            ),
+                            "phone": place.get(
+                                "nationalPhoneNumber",
+                                "N/A",
+                            ),
+                            "maps_link": place.get(
+                                "googleMapsUri",
+                                "#",
+                            ),
+                        }
+                    )
+
                 return places_list
-                
-            logger.error(f"Google Places API Error: {response.status_code}")
+
+            logger.error(
+                "Google Places API Error: %s - %s",
+                response.status_code,
+                response.text,
+            )
+
         except requests.exceptions.RequestException as error:
-            logger.error(f"Google Places Request Failed: {str(error)}")
+            logger.error(
+                "Google Places Request Failed: %s",
+                str(error),
+            )
 
-        return cls.get_mock_community_data(religion_choice)
-
+        return cls.get_mock_community_data(
+            religion_choice,
+            city,
+        )
+    
     @staticmethod
     def get_verified_daily_reminder():
         return {
@@ -163,7 +265,7 @@ class IslamicAPIService:
                 "options": ["Shahada", "Salah", "Zakat", "Hajj"],
                 "correct_answer": "Zakat",
                 "explanation": "Zakat represents a fixed percentage portion of wealth given away to designated charitable categories.",
-                "source": "Surah At-Tawbah [3:60]"
+                "source": "Surah At-Tawbah [9:60]"
             },
             {
                 "id": 5,
@@ -174,22 +276,90 @@ class IslamicAPIService:
                 "source": "Ar-Raheeq Al-Makhtoom (The Sealed Nectar)"
             }
         ]
-
     @staticmethod
-    def get_mock_community_data(religion_choice):
+    def get_mock_community_data(religion_choice, city=None):
+        city_name = city or "your area"
+
         mock_database = {
             "Islam": [
-                {"name": "Central Community Masjid", "address": "123 Faith Way, Atlanta, GA", "distance": "1.2 miles", "phone": "404-555-0199", "maps_link": "#"},
-                {"name": "Downtown Islamic Center", "address": "789 Peace St, Atlanta, GA", "distance": "3.5 miles", "phone": "404-555-0142", "maps_link": "#"}
+                {
+                    "name": f"Central Community Masjid of {city_name}",
+                    "address": f"123 Faith Way, {city_name}",
+                    "distance": "1.2 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                },
+                {
+                    "name": f"{city_name} Islamic Center",
+                    "address": f"789 Peace Street, {city_name}",
+                    "distance": "3.5 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                },
             ],
             "Christianity": [
-                {"name": "Grace Fellowship Church", "address": "456 Hope Blvd, Atlanta, GA", "distance": "2.1 miles", "phone": "404-555-0122", "maps_link": "#"}
+                {
+                    "name": f"Grace Fellowship of {city_name}",
+                    "address": f"456 Hope Boulevard, {city_name}",
+                    "distance": "2.1 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                }
             ],
             "Judaism": [
-                {"name": "B'nai Israel Synagogue", "address": "555 Shalom Dr, Atlanta, GA", "distance": "4.0 miles", "phone": "404-555-0177", "maps_link": "#"}
-            ]
+                {
+                    "name": f"{city_name} Community Synagogue",
+                    "address": f"555 Shalom Drive, {city_name}",
+                    "distance": "4.0 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                }
+            ],
+            "Hinduism": [
+                {
+                    "name": f"{city_name} Hindu Temple",
+                    "address": f"210 Dharma Road, {city_name}",
+                    "distance": "2.8 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                }
+            ],
+            "Buddhism": [
+                {
+                    "name": f"{city_name} Buddhist Center",
+                    "address": f"88 Mindful Lane, {city_name}",
+                    "distance": "3.1 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                }
+            ],
+            "Sikhism": [
+                {
+                    "name": f"{city_name} Gurdwara",
+                    "address": f"34 Seva Street, {city_name}",
+                    "distance": "4.2 miles",
+                    "phone": "Not available",
+                    "maps_link": "#",
+                }
+            ],
         }
+
         return mock_database.get(religion_choice, [])
+    # @staticmethod
+    # def get_mock_community_data(religion_choice):
+    #     mock_database = {
+    #         "Islam": [
+    #             {"name": "Central Community Masjid", "address": "123 Faith Way, Atlanta, GA", "distance": "1.2 miles", "phone": "404-555-0199", "maps_link": "#"},
+    #             {"name": "Downtown Islamic Center", "address": "789 Peace St, Atlanta, GA", "distance": "3.5 miles", "phone": "404-555-0142", "maps_link": "#"}
+    #         ],
+    #         "Christianity": [
+    #             {"name": "Grace Fellowship Church", "address": "456 Hope Blvd, Atlanta, GA", "distance": "2.1 miles", "phone": "404-555-0122", "maps_link": "#"}
+    #         ],
+    #         "Judaism": [
+    #             {"name": "B'nai Israel Synagogue", "address": "555 Shalom Dr, Atlanta, GA", "distance": "4.0 miles", "phone": "404-555-0177", "maps_link": "#"}
+    #         ]
+    #     }
+    #     return mock_database.get(religion_choice, [])
 
 
 if __name__ == "__main__":
