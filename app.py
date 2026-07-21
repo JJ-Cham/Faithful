@@ -319,6 +319,12 @@ def create_app(test_config=None):
             user.selected_religion,
             latitude,
             longitude,
+            city=user.city,
+        )
+
+        using_mock_data = (
+            not IslamicAPIService.MAPS_KEY
+            or IslamicAPIService.MAPS_KEY.startswith("mock_")
         )
 
         return render_template(
@@ -329,6 +335,7 @@ def create_app(test_config=None):
             country=user.country,
             places=places,
             used_default_location=city_key not in CITY_COORDINATES,
+            using_mock_data=using_mock_data,
         )
 
     @app.route("/dashboard")
