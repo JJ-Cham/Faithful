@@ -1,134 +1,292 @@
 {% extends "base.html" %}
 
-{% block title %}Personalize Your Experience | Faithful{% endblock %}
+{% block title %}Preferences & Learning | Faithful{% endblock %}
 
 {% block content %}
-<section class="location-page page-shell">
-    <div class="card form-card">
-        <p class="eyebrow">Step 2 of 2</p>
+<section class="preferences-page page-shell">
+    <header class="preferences-header">
+        <div>
+            <p class="eyebrow">Personalize your journey</p>
 
-        <h1>Personalize Your Experience</h1>
+            <h1>Preferences & Learning</h1>
 
-        <p>
-            Select a religion and enter your location so Faithful
-            can recommend relevant places of worship near you.
-        </p>
+            <p>
+                Choose a faith tradition and location, then review
+                a short learning preview before visiting the
+                community finder or quiz.
+            </p>
+        </div>
 
-        <form action="{{ url_for('save_location') }}" method="post">
-            <div class="form-group">
-                <label for="religion">Religion</label>
+        <div
+            class="learning-step-badge"
+            aria-label="Learning journey step"
+        >
+            <span>Step 2</span>
+            <strong>Learn before you quiz</strong>
+        </div>
+    </header>
 
-                <select id="religion" name="religion" required>
-                    <option value="">Select one</option>
+    <div class="preferences-layout">
+        <section class="card preference-form-card">
+            <p class="card-kicker">Your preferences</p>
 
-                    <option
-                        value="Islam"
-                        {% if religion == "Islam" %}selected{% endif %}
+            <h2>Faith and location</h2>
+
+            <p>
+                Faithful uses these choices to personalize learning
+                content and find nearby places of worship.
+            </p>
+
+            <form
+                action="{{ url_for('save_location') }}"
+                method="post"
+            >
+                <div class="form-group">
+                    <label for="religion">Religion</label>
+
+                    <select
+                        id="religion"
+                        name="religion"
+                        required
                     >
-                        Islam
-                    </option>
+                        <option value="">Select one</option>
 
-                    <option
-                        value="Christianity"
-                        {% if religion == "Christianity" %}selected{% endif %}
+                        {% for option in [
+                            "Islam",
+                            "Christianity",
+                            "Judaism",
+                            "Hinduism",
+                            "Buddhism",
+                            "Sikhism",
+                            "Other"
+                        ] %}
+                            <option
+                                value="{{ option }}"
+                                {% if religion == option %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ option }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group other-faith-input">
+                    <label for="other_religion">
+                        Other religion
+                        <span class="optional-text">
+                            (only when selected)
+                        </span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="other_religion"
+                        name="other_religion"
+                        placeholder="Enter a religion not listed"
                     >
-                        Christianity
-                    </option>
+                </div>
 
-                    <option
-                        value="Judaism"
-                        {% if religion == "Judaism" %}selected{% endif %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City</label>
+
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            value="{{ city or '' }}"
+                            autocomplete="address-level2"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">
+                            State or region
+                        </label>
+
+                        <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            value="{{ state or '' }}"
+                            autocomplete="address-level1"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Country</label>
+
+                    <input
+                        type="text"
+                        id="country"
+                        name="country"
+                        value="{{ country or 'United States' }}"
+                        autocomplete="country-name"
+                        required
                     >
-                        Judaism
-                    </option>
+                </div>
 
-                    <option
-                        value="Hinduism"
-                        {% if religion == "Hinduism" %}selected{% endif %}
-                    >
-                        Hinduism
-                    </option>
-
-                    <option
-                        value="Buddhism"
-                        {% if religion == "Buddhism" %}selected{% endif %}
-                    >
-                        Buddhism
-                    </option>
-
-                    <option
-                        value="Sikhism"
-                        {% if religion == "Sikhism" %}selected{% endif %}
-                    >
-                        Sikhism
-                    </option>
-
-                    <option
-                        value="Other"
-                        {% if religion == "Other" %}selected{% endif %}
-                    >
-                        Other
-                    </option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="other_religion">
-                    Other religion
-                    <span class="optional-text">(optional)</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="other_religion"
-                    name="other_religion"
-                    placeholder="Enter a religion not listed"
+                <button
+                    class="button-full"
+                    type="submit"
                 >
-            </div>
+                    Save Preferences & Show Learning Preview
+                </button>
+            </form>
+        </section>
 
-            <div class="form-group">
-                <label for="city">City</label>
+        {% if learning_content %}
+            <section
+                class="learning-preview"
+                id="learn-before-quiz"
+                aria-labelledby="learning-preview-title"
+            >
+                <div class="learning-preview-heading">
+                    <div>
+                        <p class="eyebrow">
+                            Today's learning preview
+                        </p>
 
-                <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value="{{ city|default('') }}"
-                    autocomplete="address-level2"
-                    required
+                        <h2 id="learning-preview-title">
+                            Learn about
+                            {{ learning_content.religion }}
+                        </h2>
+                    </div>
+
+                    {% if preferences_saved %}
+                        <span class="saved-badge">
+                            Preferences saved
+                        </span>
+                    {% endif %}
+                </div>
+
+                <article class="card daily-reflection-card">
+                    <div
+                        class="quote-symbol"
+                        aria-hidden="true"
+                    >
+                        “
+                    </div>
+
+                    <p class="card-kicker">
+                        Reflection of the day
+                    </p>
+
+                    <blockquote>
+                        {{ learning_content.quote.text }}
+                    </blockquote>
+
+                    <p class="reflection-citation">
+                        {{ learning_content.quote.citation }}
+                    </p>
+
+                    <p class="source-text">
+                        Source:
+                        {{ learning_content.quote.source }}
+                    </p>
+                </article>
+
+                <div class="fun-facts-heading">
+                    <div>
+                        <p class="eyebrow">Quick knowledge</p>
+                        <h2>Three facts to remember</h2>
+                    </div>
+
+                    <p>
+                        {% if
+                            learning_content.religion|lower
+                            == "islam"
+                        %}
+                            These facts introduce ideas that may
+                            appear in the Islamic quiz.
+                        {% else %}
+                            These facts offer a short introduction
+                            while a complete learning dashboard is
+                            planned.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="fun-facts-grid">
+                    {% for fact in learning_content.facts %}
+                        <article class="fact-card">
+                            <span class="fact-number">
+                                {{ "%02d"|format(loop.index) }}
+                            </span>
+
+                            <h3>{{ fact.title }}</h3>
+
+                            <p>{{ fact.text }}</p>
+
+                            <p class="source-text">
+                                Source: {{ fact.source }}
+                            </p>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <p class="learning-disclaimer">
+                    {{ learning_content.disclaimer }}
+                </p>
+
+                <div class="learning-actions">
+                    <a
+                        class="button"
+                        href="{{ url_for('community') }}"
+                    >
+                        Continue to Community
+                    </a>
+
+                    {% if
+                        learning_content.religion|lower
+                        == "islam"
+                    %}
+                        <a
+                            class="button button-outline"
+                            href="{{ url_for('quiz') }}"
+                        >
+                            I've Reviewed This — Start Quiz
+                        </a>
+                    {% else %}
+                        <a
+                            class="button button-outline"
+                            href="{{ url_for('future_support') }}"
+                        >
+                            View Learning Roadmap
+                        </a>
+                    {% endif %}
+                </div>
+            </section>
+
+        {% else %}
+            <aside class="card learning-placeholder">
+                <div
+                    class="placeholder-orbit"
+                    aria-hidden="true"
                 >
-            </div>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                </div>
 
-            <div class="form-group">
-                <label for="state">State or region</label>
+                <p class="eyebrow">What happens next?</p>
 
-                <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    value="{{ state|default('') }}"
-                    autocomplete="address-level1"
-                    required
-                >
-            </div>
+                <h2>
+                    Your learning preview will appear here
+                </h2>
 
-            <div class="form-group">
-                <label for="country">Country</label>
-
-                <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    value="{{ country|default('United States') }}"
-                    autocomplete="country-name"
-                    required
-                >
-            </div>
-
-            <button class="button-full" type="submit">
-                Save and Find Communities
-            </button>
-        </form>
+                <p>
+                    Save your religion and location to unlock
+                    a daily reflection, three sourced facts,
+                    and the next step in your Faithful journey.
+                </p>
+            </aside>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

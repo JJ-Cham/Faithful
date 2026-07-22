@@ -19,6 +19,300 @@ RELIGION_KEYWORD_MAP = {
     "Sikhism": "gurdwara OR Sikh temple"
 }
 
+RELIGION_LEARNING_CONTENT = {
+    "Islam": {
+        "quotes": [
+            {
+                "text": "Indeed, with hardship comes ease.",
+                "citation": "Qur'an 94:6",
+                "source": "Sahih International translation",
+            },
+            {
+                "text": (
+                    "Allah does not burden a soul beyond that "
+                    "it can bear."
+                ),
+                "citation": "Qur'an 2:286",
+                "source": "Sahih International translation",
+            },
+        ],
+        "facts": [
+            {
+                "title": "Five daily prayers",
+                "text": (
+                    "The obligatory prayers are Fajr, Dhuhr, "
+                    "Asr, Maghrib, and Isha."
+                ),
+                "source": "Sahih al-Bukhari and Sahih Muslim",
+            },
+            {
+                "title": "Ramadan",
+                "text": (
+                    "Muslims fast during Ramadan, the month in "
+                    "which the Qur'an was revealed."
+                ),
+                "source": "Qur'an 2:185",
+            },
+            {
+                "title": "Qibla",
+                "text": (
+                    "During prayer, Muslims face the Kaaba in "
+                    "Makkah. This direction is called the Qibla."
+                ),
+                "source": "Qur'an 2:144",
+            },
+        ],
+    },
+
+    "Christianity": {
+        "quotes": [
+            {
+                "text": "Blessed are the peacemakers.",
+                "citation": "Matthew 5:9",
+                "source": "King James Version",
+            },
+            {
+                "text": "Thou shalt love thy neighbour as thyself.",
+                "citation": "Mark 12:31",
+                "source": "King James Version",
+            },
+        ],
+        "facts": [
+            {
+                "title": "Two main sections",
+                "text": (
+                    "The Christian Bible is commonly organized "
+                    "into the Old Testament and New Testament."
+                ),
+                "source": "The Holy Bible",
+            },
+            {
+                "title": "Communion",
+                "text": (
+                    "Communion, also called the Eucharist, "
+                    "remembers Jesus' Last Supper with his disciples."
+                ),
+                "source": "1 Corinthians 11:23–26",
+            },
+            {
+                "title": "Easter",
+                "text": (
+                    "Easter commemorates the resurrection of Jesus."
+                ),
+                "source": (
+                    "Matthew 28; Mark 16; Luke 24; John 20"
+                ),
+            },
+        ],
+    },
+
+    "Judaism": {
+        "quotes": [
+            {
+                "text": "Justice, justice shalt thou pursue.",
+                "citation": "Deuteronomy 16:20",
+                "source": "JPS 1917 translation",
+            },
+            {
+                "text": "Love thy neighbour as thyself.",
+                "citation": "Leviticus 19:18",
+                "source": "JPS 1917 translation",
+            },
+        ],
+        "facts": [
+            {
+                "title": "The Torah",
+                "text": (
+                    "The Torah contains the first five books "
+                    "of the Hebrew Bible."
+                ),
+                "source": "The Tanakh",
+            },
+            {
+                "title": "Shabbat",
+                "text": (
+                    "Shabbat is the weekly day of rest, beginning "
+                    "on Friday evening and continuing through Saturday."
+                ),
+                "source": (
+                    "Exodus 20:8–11 and Jewish tradition"
+                ),
+            },
+            {
+                "title": "The synagogue",
+                "text": (
+                    "A synagogue can serve as a place for prayer, "
+                    "study, and community gathering."
+                ),
+                "source": "Jewish Encyclopedia",
+            },
+        ],
+    },
+
+    "Hinduism": {
+        "quotes": [
+            {
+                "text": "Yoga is skill in action.",
+                "citation": "Bhagavad Gita 2:50",
+                "source": "Bhagavad Gita",
+            },
+            {
+                "text": "The Self is the friend of the self.",
+                "citation": "Bhagavad Gita 6:5",
+                "source": "Bhagavad Gita",
+            },
+        ],
+        "facts": [
+            {
+                "title": "Many traditions",
+                "text": (
+                    "Hinduism includes many schools, practices, "
+                    "and regional traditions rather than a single "
+                    "founder or creed."
+                ),
+                "source": "Encyclopaedia Britannica",
+            },
+            {
+                "title": "The Bhagavad Gita",
+                "text": (
+                    "The Bhagavad Gita is a dialogue within "
+                    "the Mahabharata."
+                ),
+                "source": "The Mahabharata",
+            },
+            {
+                "title": "Diwali",
+                "text": (
+                    "Diwali is a festival of lights observed by "
+                    "many Hindu communities and some other South "
+                    "Asian traditions."
+                ),
+                "source": "Encyclopaedia Britannica",
+            },
+        ],
+    },
+
+    "Buddhism": {
+        "quotes": [
+            {
+                "text": "Hatred is never appeased by hatred.",
+                "citation": "Dhammapada 5",
+                "source": "The Dhammapada",
+            },
+            {
+                "text": "All conditioned things are impermanent.",
+                "citation": "Dhammapada 277",
+                "source": "The Dhammapada",
+            },
+        ],
+        "facts": [
+            {
+                "title": "The Buddha",
+                "text": (
+                    "Siddhartha Gautama became known as the Buddha, "
+                    "meaning the Awakened One."
+                ),
+                "source": "Encyclopaedia Britannica",
+            },
+            {
+                "title": "Four Noble Truths",
+                "text": (
+                    "The Four Noble Truths explain suffering, "
+                    "its origin, its ending, and the path leading "
+                    "to its ending."
+                ),
+                "source": "Dhammacakkappavattana Sutta",
+            },
+            {
+                "title": "Eightfold Path",
+                "text": (
+                    "The Noble Eightfold Path brings together "
+                    "ethical conduct, mental discipline, and wisdom."
+                ),
+                "source": "Dhammacakkappavattana Sutta",
+            },
+        ],
+    },
+
+    "Sikhism": {
+        "quotes": [
+            {
+                "text": "No one is my enemy, no one a stranger.",
+                "citation": "Guru Granth Sahib, Ang 1299",
+                "source": "Sri Guru Granth Sahib",
+            },
+            {
+                "text": "Recognize the whole human race as one.",
+                "citation": "Akal Ustat",
+                "source": "Guru Gobind Singh",
+            },
+        ],
+        "facts": [
+            {
+                "title": "Origins in Punjab",
+                "text": (
+                    "Sikhism began in the Punjab region with "
+                    "Guru Nanak in the fifteenth century."
+                ),
+                "source": "Encyclopaedia Britannica",
+            },
+            {
+                "title": "Living Guru",
+                "text": (
+                    "Sikhs regard the Guru Granth Sahib as "
+                    "the eternal Guru."
+                ),
+                "source": "Sri Guru Granth Sahib",
+            },
+            {
+                "title": "Langar",
+                "text": (
+                    "Langar is a free community meal traditionally "
+                    "open to everyone, regardless of background."
+                ),
+                "source": "Sikh Rehat Maryada",
+            },
+        ],
+    },
+
+    "Other": {
+        "quotes": [
+            {
+                "text": (
+                    "Learning begins with respectful curiosity."
+                ),
+                "citation": "Faithful community principle",
+                "source": "Faithful",
+            },
+        ],
+        "facts": [
+            {
+                "title": "Start with primary sources",
+                "text": (
+                    "When exploring a tradition, begin with its own "
+                    "texts, institutions, and community voices."
+                ),
+                "source": "Faithful learning guideline",
+            },
+            {
+                "title": "Ask respectful questions",
+                "text": (
+                    "Practices can differ across denominations, "
+                    "schools, cultures, and local communities."
+                ),
+                "source": "Faithful learning guideline",
+            },
+            {
+                "title": "Keep learning local",
+                "text": (
+                    "A nearby community can provide context that "
+                    "a short online summary cannot."
+                ),
+                "source": "Faithful learning guideline",
+            },
+        ],
+    },
+}
 class IslamicAPIService:
     ALADHAN_BASE_URL = os.getenv("ALADHAN_API_BASE_URL", "https://api.aladhan.com/v1")
     UMMAH_API_KEY = os.getenv("UMMAH_API_KEY")
@@ -224,6 +518,32 @@ class IslamicAPIService:
             city,
         )
     
+    @classmethod
+    def get_religion_learning_content(cls, religion_choice):
+        """Return a rotating reflection and sourced learning facts."""
+
+        content_key = (
+            religion_choice
+            if religion_choice in RELIGION_LEARNING_CONTENT
+            else "Other"
+        )
+
+        content = RELIGION_LEARNING_CONTENT[content_key]
+        quotes = content["quotes"]
+
+        day_number = datetime.now().timetuple().tm_yday
+        quote_index = (day_number - 1) % len(quotes)
+
+        return {
+            "religion": religion_choice or "Other",
+            "is_supported": content_key != "Other",
+            "quote": quotes[quote_index],
+            "facts": content["facts"],
+            "disclaimer": (
+                "This learning preview is educational. Practices and "
+                "interpretations can vary across communities."
+            ),
+        }
     @staticmethod
     def get_verified_daily_reminder():
         return {

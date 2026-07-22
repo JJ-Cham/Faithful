@@ -219,8 +219,20 @@ def create_app(test_config=None):
         user = get_logged_in_user()
 
         if user is None:
-            flash("Please create an account or log in first.", "error")
+            flash(
+                "Please create an account or log in first.",
+                "error",
+            )
             return redirect(url_for("login"))
+
+        learning_content = None
+
+        if user.selected_religion:
+            learning_content = (
+                IslamicAPIService.get_religion_learning_content(
+                    user.selected_religion
+                )
+            )
 
         return render_template(
             "location.html",
@@ -228,6 +240,8 @@ def create_app(test_config=None):
             city=user.city,
             state=user.state,
             country=user.country,
+            learning_content=learning_content,
+            preferences_saved=request.args.get("saved") == "1",
         )
 
     @app.route("/save-location", methods=["POST"])
@@ -239,6 +253,7 @@ def create_app(test_config=None):
             return redirect(url_for("login"))
 
         religion = request.form.get("religion", "").strip()
+
         other_religion = request.form.get(
             "other_religion",
             "",
@@ -267,7 +282,10 @@ def create_app(test_config=None):
             return redirect(url_for("location"))
 
         if not state:
-            flash("Please enter your state or region.", "error")
+            flash(
+                "Please enter your state or region.",
+                "error",
+            )
             return redirect(url_for("location"))
 
         if not country:
@@ -287,11 +305,18 @@ def create_app(test_config=None):
         session["country"] = country
 
         flash(
-            "Your religion and location were saved.",
+            "Preferences saved. Review today's reflection and "
+            "facts before continuing.",
             "success",
         )
 
-        return redirect(url_for("community"))
+        return redirect(
+            url_for(
+                "location",
+                saved="1",
+                _anchor="learn-before-quiz",
+            )
+        )
     
     @app.route("/community")
     def community():
