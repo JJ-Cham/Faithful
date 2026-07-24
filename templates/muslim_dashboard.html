@@ -4,46 +4,130 @@
 
 {% block content %}
 
-<section class="dashboard">
+<section class="page-shell">
 
-    <h1>Muslim Dashboard</h1>
+    <header class="section-heading">
+        <div>
+            <p class="eyebrow">Daily Faith Dashboard</p>
 
-    <p>
-        Welcome to your personalized Islamic learning dashboard.
-    </p>
+            <h1>Muslim Dashboard</h1>
 
-    <section>
+            <p>
+                View today’s prayer times, Hijri date,
+                daily Quran reminder, and learning activities.
+            </p>
+        </div>
+    </header>
 
-        <h2>Prayer Times</h2>
+    <div class="dashboard-grid">
 
-        <p>
-            Daily prayer times will appear here.
-        </p>
+        <!-- Hijri Date -->
+        <section class="card dashboard-date">
+            <p class="stat-label">
+                Hijri Date
+            </p>
 
-    </section>
+            {% if prayer_data and prayer_data.hijri_date %}
+                <p class="stat-value">
+                    {{ prayer_data.hijri_date }}
+                </p>
+            {% else %}
+                <p>
+                    The Hijri date is currently unavailable.
+                </p>
+            {% endif %}
 
-    <section>
+            {% if prayer_data.status == "fallback" %}
+                <div class="flash-message warning">
+                    Live prayer information is temporarily unavailable.
+                    Demonstration data is being shown.
+                </div>
+            {% endif %}
+        </section>
 
-        <h2>Daily Quran Reminder</h2>
+        <!-- Prayer Times -->
+        <section class="card dashboard-prayers">
+            <p class="card-kicker">
+                Today’s Schedule
+            </p>
 
-        <p>
-            Quran verses and reflections will appear here.
-        </p>
+            <h2>Prayer Times</h2>
 
-    </section>
+            {% if prayer_data and prayer_data.prayer_times %}
+                <ul class="prayer-list">
+                    {% for prayer, time in prayer_data.prayer_times.items() %}
+                        <li>
+                            <span class="prayer-name">
+                                {{ prayer }}
+                            </span>
 
-    <section>
+                            <span class="prayer-time">
+                                {{ time }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>
+                    Prayer times are currently unavailable.
+                </p>
+            {% endif %}
+        </section>
 
-        <h2>Islamic Quiz</h2>
+        <!-- Daily Reminder -->
+        <section class="card reminder-card dashboard-reminder">
+            <p class="card-kicker">
+                Daily Quran Reminder
+            </p>
 
-        <p>
-            Test your knowledge with daily quizzes.
-        </p>
+            {% if reminder %}
+                <blockquote class="reminder-quote">
+                    “{{ reminder.content }}”
+                </blockquote>
 
-        <a class="button" href="{{ url_for('quiz') }}">
-            Take Islamic Quiz
-        </a>
-    </section>
+                <p>
+                    <strong>
+                        {{ reminder.surah_verse }}
+                    </strong>
+                </p>
+
+                <p class="source-text">
+                    <strong>Source:</strong>
+                    {{ reminder.source }}
+                </p>
+
+                <p class="source-text">
+                    {{ reminder.disclaimer }}
+                </p>
+            {% else %}
+                <p>
+                    Today’s Quran reminder is currently unavailable.
+                </p>
+            {% endif %}
+        </section>
+
+        <!-- Quiz -->
+        <section class="card dashboard-quiz">
+            <p class="card-kicker">
+                Continue Learning
+            </p>
+
+            <h2>Islamic Quiz</h2>
+
+            <p>
+                Test your knowledge, review explanations,
+                and see the sources behind each answer.
+            </p>
+
+            <a
+                class="button"
+                href="{{ url_for('quiz') }}"
+            >
+                Take Islamic Quiz
+            </a>
+        </section>
+
+    </div>
 
 </section>
 
